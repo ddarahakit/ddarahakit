@@ -192,7 +192,7 @@ onMounted(() => {
                 <header class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <h1 class="text-3xl font-bold text-slate-900 tracking-tight">
-                            좋은 아침입니다, {{ authStore.getUserName() }}님! ☕
+                            좋은 아침입니다, {{ authStore.userName }}님! ☕
                         </h1>
                         <p class="text-slate-500 text-sm mt-1">오늘도 지식을 넓힐 준비가 되셨나요?</p>
                     </div>
@@ -226,7 +226,7 @@ onMounted(() => {
                         </div>
                         <div class="flex-grow text-center md:text-left">
                             <h2 class="text-2xl md:text-3xl font-bold mb-2">
-                                {{ authStore.getUserName() }}
+                                {{ authStore.userName }}
                             </h2>
                             <p class="text-blue-50 text-sm mb-6 opacity-90">
                                 {{ userProfile.introduction || '아직 자기소개가 없습니다.' }}
@@ -504,6 +504,24 @@ onMounted(() => {
                             </template>
                         </div>
 
+                        <!-- 멘토링 진입 카드 -->
+                        <RouterLink :to="{ name: 'mentoring' }"
+                            class="mentoring-card group block rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-100">
+                            <div class="absolute -right-5 -bottom-6 opacity-20 pointer-events-none">
+                                <i class="fa-solid fa-comments text-7xl"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-blue-50/90">Mentoring</span>
+                                <h3 class="text-lg font-bold mt-1 mb-1.5">멘토와 1:1 대화</h3>
+                                <p class="text-[13px] text-blue-50/90 mb-5 leading-relaxed">
+                                    막힌 부분을 멘토에게 직접 물어보고<br />함께 성장하세요.
+                                </p>
+                                <span class="inline-flex items-center gap-1.5 text-sm font-bold group-hover:gap-2.5 transition-all">
+                                    멘토링 바로가기 <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </span>
+                            </div>
+                        </RouterLink>
+
                     </div>
                 </div>
             </div>
@@ -514,6 +532,16 @@ onMounted(() => {
 <style scoped>
 .profile-card {
     background: linear-gradient(135deg, #14BCED 0%, #0ea5e9 50%, #0284c7 100%);
+}
+
+.mentoring-card {
+    background: linear-gradient(135deg, #6366F1 0%, #4f46e5 55%, #4338ca 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mentoring-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(79, 70, 229, 0.45);
 }
 
 .bg-pattern-icons {

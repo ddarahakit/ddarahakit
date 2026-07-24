@@ -62,6 +62,8 @@ const updateProfile = async () => {
     const data = await api.updateProfile(userProfile.value)
     if (data.success) {
         originalProfile.value = { ...userProfile.value }
+        // 헤더/대시보드에서 참조하는 스토리지·반응형 이름도 즉시 갱신
+        authStore.setUserName(userProfile.value.name)
         showAlert('success', '프로필이 저장되었습니다.')
     } else {
         showAlert('error', '프로필 저장에 실패했습니다.')

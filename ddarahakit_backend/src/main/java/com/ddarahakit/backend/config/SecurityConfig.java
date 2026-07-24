@@ -142,6 +142,8 @@ public class SecurityConfig {
                         .requestMatchers(GET, "/stats/**").permitAll()
                         .requestMatchers(GET, "/review/*").permitAll()
                         .requestMatchers(GET, "/community/**").permitAll()
+                        // 블로그: 목록/상세는 공개, 작성/수정/삭제(POST/PUT/DELETE /blog)는 인증 필요(서비스에서 ROLE_ADMIN 강제)
+                        .requestMatchers(GET, "/blog/**").permitAll()
                         .requestMatchers(POST, "/user/login", "/user/social/login", "/user/signup", "/user/email/verify", "/user/password/reset").permitAll()
                         // 로그아웃은 만료/무효 토큰 상태에서도 성공해야 하므로 permitAll. 상태변경이라 GET→POST (CSRF 방어).
                         .requestMatchers(POST, "/user/logout").permitAll()

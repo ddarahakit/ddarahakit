@@ -56,13 +56,16 @@ const logout = () => {
         <nav class="menu_nav">
             <ul class="menu_mm">
                 <li class="menu_mm">
-                    <RouterLink :to="{ name: 'courseList' }" @click="closeHeaderMenu">실제 수업</RouterLink>
+                    <RouterLink :to="{ name: 'courseList' }" @click="closeHeaderMenu">전체 수업</RouterLink>
                 </li>
                 <li class="menu_mm">
-                    <RouterLink :to="{ name: 'projectManagement' }" @click="closeHeaderMenu">포트폴리오</RouterLink>
+                    <RouterLink :to="{ name: 'roadmap' }" @click="closeHeaderMenu">로드맵</RouterLink>
                 </li>
                 <li class="menu_mm">
                     <RouterLink :to="{ name: 'communityList' }" @click="closeHeaderMenu">커뮤니티</RouterLink>
+                </li>
+                <li class="menu_mm">
+                    <RouterLink :to="{ name: 'blogList' }" @click="closeHeaderMenu">블로그</RouterLink>
                 </li>
                 <template v-if="!isLogin">
                     <li class="menu_mm">
