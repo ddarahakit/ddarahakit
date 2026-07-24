@@ -25,6 +25,9 @@ const isProjectActive = computed(() => route.path.startsWith('/projects'))
 // '커뮤니티' 활성화: /community 하위 모든 경로에서 활성
 const isCommunityActive = computed(() => route.path.startsWith('/community'))
 
+// '블로그' 활성화: /blog 하위 모든 경로에서 활성
+const isBlogActive = computed(() => route.path.startsWith('/blog'))
+
 //강의 검색
 const searchKeyword = ref('')
 const goSearch = () => {
@@ -103,13 +106,13 @@ onMounted(() => {
         </a>
         <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-500">
           <RouterLink :to="{ name: 'courseList' }" class="hover:text-brand transition-colors py-5 border-b-2 border-transparent"
-            :class="{ '!text-brand !border-brand': isCourseActive }">실제 수업</RouterLink>
+            :class="{ '!text-brand !border-brand': isCourseActive }">전체 수업</RouterLink>
           <RouterLink :to="{ name: 'roadmap' }" class="hover:text-brand transition-colors py-5 border-b-2 border-transparent"
             :class="{ '!text-brand !border-brand': isRoadmapActive }">로드맵</RouterLink>
-          <RouterLink :to="{ name: 'projectManagement' }" class="hover:text-brand transition-colors py-5 border-b-2 border-transparent"
-            :class="{ '!text-brand !border-brand': isProjectActive }">포트폴리오</RouterLink>
           <RouterLink :to="{ name: 'communityList' }" class="hover:text-brand transition-colors py-5 border-b-2 border-transparent"
             :class="{ '!text-brand !border-brand': isCommunityActive }">커뮤니티</RouterLink>
+          <RouterLink :to="{ name: 'blogList' }" class="hover:text-brand transition-colors py-5 border-b-2 border-transparent"
+            :class="{ '!text-brand !border-brand': isBlogActive }">블로그</RouterLink>
         </div>
       </div>
       <!-- 강의 검색 -->
@@ -134,7 +137,7 @@ onMounted(() => {
           <div class="flex items-center py-0.5 gap-3 cursor-pointer">
             <div class="text-right hidden sm:block">
               <p class="text-[13px] font-bold text-slate-700 leading-none">
-                {{ authStore.getUserName() }}
+                {{ authStore.userName }}
               </p>
               <p class="text-[10px] text-slate-400 mt-1">LV.2 수강생</p>
             </div>

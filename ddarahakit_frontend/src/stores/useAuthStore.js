@@ -19,6 +19,9 @@ const useAuthStore = defineStore('auth', () => {
     //프로필 이미지 (헤더 등에서 반응형으로 참조 → 변경 시 즉시 반영)
     const profileImage = ref('')
 
+    //사용자 이름 (헤더/대시보드에서 반응형으로 참조 → 변경 시 즉시 반영)
+    const userName = ref('')
+
     /**
      * 토큰 정보 저장
      *
@@ -252,6 +255,25 @@ const useAuthStore = defineStore('auth', () => {
     }
 
     /**
+     * 사용자 이름 갱신
+     *
+     * 프로필 수정 시 스토리지 값을 동기화해 헤더/대시보드에 반영되도록 한다.
+     */
+    const setUserName = (name) => {
+        const store = encryptStorage.getItem('store')
+
+        if (!store) {
+            return
+        }
+
+        store.userName = name
+        encryptStorage.setItem('store', JSON.stringify(store))
+
+        //반응형 값 갱신 → 헤더/대시보드에 즉시 반영
+        userName.value = name || ''
+    }
+
+    /**
      * 아이디 저장 정보 삭제
      *
      * 로그인 '아이디 저장' 해제시 스토리지에 해당 값을 삭제한다.
@@ -270,12 +292,14 @@ const useAuthStore = defineStore('auth', () => {
         //로그인 여부
         isLogin.value = checkLogin()
 
-        //프로필 이미지 반응형 값을 스토리지와 동기화
+        //프로필 이미지·이름 반응형 값을 스토리지와 동기화
         if (isLogin.value) {
             const store = encryptStorage.getItem('store')
             profileImage.value = (store && store.userProfileImage) ? store.userProfileImage : ''
+            userName.value = (store && store.userName) ? store.userName : ''
         } else {
             profileImage.value = ''
+            userName.value = ''
         }
     }
 
@@ -283,6 +307,7 @@ const useAuthStore = defineStore('auth', () => {
     return {
         isLogin,
         profileImage,
+        userName,
         getWithExpiry,
         checkLogin,
         login,
@@ -291,6 +316,7 @@ const useAuthStore = defineStore('auth', () => {
         loginTmXts,
         setRecycle,
         getUserName,
+        setUserName,
         getUserIdx,
         getUserRole,
         getUserProfileImage,

@@ -192,7 +192,7 @@ onMounted(() => {
                 <header class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <h1 class="text-3xl font-bold text-slate-900 tracking-tight">
-                            좋은 아침입니다, {{ authStore.getUserName() }}님! ☕
+                            좋은 아침입니다, {{ authStore.userName }}님! ☕
                         </h1>
                         <p class="text-slate-500 text-sm mt-1">오늘도 지식을 넓힐 준비가 되셨나요?</p>
                     </div>
@@ -226,7 +226,7 @@ onMounted(() => {
                         </div>
                         <div class="flex-grow text-center md:text-left">
                             <h2 class="text-2xl md:text-3xl font-bold mb-2">
-                                {{ authStore.getUserName() }}
+                                {{ authStore.userName }}
                             </h2>
                             <p class="text-blue-50 text-sm mb-6 opacity-90">
                                 {{ userProfile.introduction || '아직 자기소개가 없습니다.' }}

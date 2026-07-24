@@ -30,3 +30,9 @@ deploy/
 
 # 배포용 compose 파일 미추적 (깃헙에 올리지 않음)
 docker-compose.yml
+
+# 파이(라즈베리) 로컬 배포 스크래치 — DB 덤프/jar/dist/비밀값·SQL 포함, 절대 추적 금지
+_pi/
+
+# 루트 services 빌드 산출물
+/services/build/

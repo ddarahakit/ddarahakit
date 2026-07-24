@@ -8,6 +8,7 @@ import ordersRoutes from "./ordersRoutes";
 import roadmapRoutes from "./roadmapRoutes";
 import projectRoutes from "./projectRoutes";
 import mentoringRoutes from "./mentoringRoutes";
+import blogRoutes from "./blogRoutes";
 import useAuthStore from "@/stores/useAuthStore";
 import logger from "@/utils/loggerUtil.js";
 
@@ -53,7 +54,8 @@ const router = createRouter({
     lectureRoutes,
     roadmapRoutes,
     projectRoutes,
-    mentoringRoutes
+    mentoringRoutes,
+    blogRoutes
   ],
 
   scrollBehavior(to, from, savedPosition) {

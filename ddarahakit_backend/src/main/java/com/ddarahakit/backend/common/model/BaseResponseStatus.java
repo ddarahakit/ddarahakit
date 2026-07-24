@@ -57,6 +57,7 @@ public enum BaseResponseStatus {
     SCRAP_NOT_FOUND(false, 40013, "스크랩 정보를 찾을 수 없습니다."),
     POST_UNAUTHORIZED(false, 40014, "게시글 작성자만 수정/삭제할 수 있습니다."),
     COMMENT_UNAUTHORIZED(false, 40015, "댓글 작성자만 수정/삭제할 수 있습니다."),
+    BLOG_NOT_FOUND(false, 40016, "블로그 글을 찾을 수 없습니다."),
     ROADMAP_NOT_FOUND(false, 40030, "로드맵을 찾을 수 없습니다."),
 
     COURSE_NOT_FOUND(false, 40060, "코스를 찾을 수 없습니다."),
