@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '@/api/blog'
 import useAuthStore from '@/stores/useAuthStore'
+import BlogAside from '@/components/blog/BlogAside.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -15,10 +16,6 @@ const posts = ref([])
 const pageInfo = ref({ page: 0, totalPages: 0, hasNext: false, hasPrev: false, totalPosts: 0 })
 const isLoading = ref(true)
 const isError = ref(false)
-
-// aside 데이터
-const categories = ref([])
-const recentPosts = ref([])
 
 // 현재 페이지(1-base) / 카테고리 / 검색어 — URL 쿼리와 동기화
 const currentPage = computed(() => Number(route.query.page) || 1)
@@ -52,18 +49,8 @@ const fetchList = async () => {
     isLoading.value = false
 }
 
-/**
- * aside(카테고리·최신글) 조회 — 목록 변경과 무관하게 1회
- */
-const fetchAside = async () => {
-    const [cat, recent] = await Promise.all([api.getCategories(), api.getRecent(5)])
-    if (cat && cat.success) categories.value = cat.results || []
-    if (recent && recent.success) recentPosts.value = recent.results || []
-}
-
 // 페이지/카테고리/검색어 변경 시 재조회
 watch(() => route.query, fetchList, { immediate: true })
-fetchAside()
 
 /**
  * 페이지 이동
@@ -99,7 +86,7 @@ const goDetail = (idx) => router.push({ name: 'blogDetail', params: { idx } })
 </script>
 
 <template>
-    <div class="max-w-6xl mx-auto px-6 pt-28 pb-24">
+    <div class="max-w-7xl mx-auto px-6 pt-28 pb-24">
         <!-- 헤더 -->
         <div class="flex items-end justify-between mb-8 gap-4">
             <div>
@@ -113,54 +100,8 @@ const goDetail = (idx) => router.push({ name: 'blogDetail', params: { idx } })
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- ── 좌측 aside ─────────────────────────── -->
-            <aside class="lg:w-64 lg:shrink-0 space-y-6">
-                <!-- 카테고리 -->
-                <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-folder-tree text-brand"></i>카테고리
-                    </h3>
-                    <ul class="space-y-1">
-                        <li>
-                            <button @click="selectCategory('')"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition"
-                                :class="!activeCategory ? 'bg-blue-50 text-brand font-semibold' : 'text-slate-600 hover:bg-slate-50'">
-                                <span>전체</span>
-                            </button>
-                        </li>
-                        <li v-for="c in categories" :key="c.category">
-                            <button @click="selectCategory(c.category)"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition"
-                                :class="activeCategory === c.category ? 'bg-blue-50 text-brand font-semibold' : 'text-slate-600 hover:bg-slate-50'">
-                                <span>{{ c.category }}</span>
-                                <span class="text-xs text-slate-400">{{ c.count }}</span>
-                            </button>
-                        </li>
-                        <li v-if="categories.length === 0" class="px-3 py-2 text-xs text-slate-400">
-                            아직 카테고리가 없습니다.
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- 최신글 -->
-                <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-brand"></i>최신글
-                    </h3>
-                    <ul class="space-y-3">
-                        <li v-for="r in recentPosts" :key="r.idx">
-                            <button @click="goDetail(r.idx)"
-                                class="text-left w-full group">
-                                <p class="text-sm text-slate-700 group-hover:text-brand line-clamp-2 transition-colors">{{ r.title }}</p>
-                                <p class="text-xs text-slate-400 mt-1">{{ r.createdAt }}</p>
-                            </button>
-                        </li>
-                        <li v-if="recentPosts.length === 0" class="text-xs text-slate-400">
-                            아직 글이 없습니다.
-                        </li>
-                    </ul>
-                </div>
-            </aside>
+            <!-- ── 좌측 aside (목록·상세 공용) ──────────── -->
+            <BlogAside />
 
             <!-- ── 본문 ─────────────────────────────── -->
             <div class="flex-1 min-w-0">
@@ -178,9 +119,25 @@ const goDetail = (idx) => router.push({ name: 'blogDetail', params: { idx } })
                     </span>
                 </div>
 
-                <!-- 로딩 -->
-                <div v-if="isLoading" class="text-center text-slate-400 py-24">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+                <!-- 로딩 (스켈레톤) -->
+                <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div v-for="n in 6" :key="n"
+                        class="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="h-40 bg-slate-100 skeleton"></div>
+                        <div class="p-5">
+                            <div class="w-16 h-5 rounded-full bg-slate-100 skeleton mb-3"></div>
+                            <div class="w-3/4 h-5 rounded bg-slate-100 skeleton mb-2"></div>
+                            <div class="w-1/2 h-5 rounded bg-slate-100 skeleton mb-4"></div>
+                            <div class="space-y-2 mb-5">
+                                <div class="w-full h-3.5 rounded bg-slate-100 skeleton"></div>
+                                <div class="w-2/3 h-3.5 rounded bg-slate-100 skeleton"></div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="w-16 h-3 rounded bg-slate-100 skeleton"></div>
+                                <div class="w-24 h-3 rounded bg-slate-100 skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 에러 -->
@@ -195,7 +152,7 @@ const goDetail = (idx) => router.push({ name: 'blogDetail', params: { idx } })
                 </div>
 
                 <!-- 목록 -->
-                <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <article v-for="post in posts" :key="post.idx" @click="goDetail(post.idx)"
                         class="group cursor-pointer bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition">
                         <div class="h-40 bg-slate-100 overflow-hidden">
@@ -238,3 +195,21 @@ const goDetail = (idx) => router.push({ name: 'blogDetail', params: { idx } })
         </div>
     </div>
 </template>
+
+<style scoped>
+/* 스켈레톤 shimmer 애니메이션 */
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+</style>

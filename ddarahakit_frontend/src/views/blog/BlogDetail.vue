@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import api from '@/api/blog'
 import useAuthStore from '@/stores/useAuthStore'
 import QuillEditor from '@/components/base/QuillEditor.vue'
+import BlogAside from '@/components/blog/BlogAside.vue'
 import { userImageUrl } from '@/utils/image'
 
 const route = useRoute()
@@ -46,6 +47,7 @@ const fetchDetail = async () => {
 watch(() => route.params.idx, fetchDetail, { immediate: true })
 
 const goList = () => router.push({ name: 'blogList' })
+const goWrite = () => router.push({ name: 'blogReg' })
 const goEdit = () => router.push({ name: 'blogEdit', params: { idx: route.params.idx } })
 
 /**
@@ -111,21 +113,53 @@ const removeComment = async (c) => {
 </script>
 
 <template>
-    <div class="max-w-3xl mx-auto px-6 pt-28 pb-24">
-        <!-- 로딩 -->
-        <div v-if="isLoading" class="text-center text-slate-400 py-24">
-            <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
-        </div>
-
-        <!-- 에러 -->
-        <div v-else-if="isError || !post" class="text-center text-slate-400 py-24">
-            글을 불러오지 못했습니다.
-            <div class="mt-6">
-                <button @click="goList" class="text-brand font-medium">← 목록으로</button>
+    <div class="max-w-7xl mx-auto px-6 pt-28 pb-24">
+        <!-- 헤더 (목록과 동일) -->
+        <div class="flex items-end justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900">블로그</h1>
+                <p class="text-slate-500 mt-2">소개하고 싶은 이야기와 소식을 전합니다.</p>
             </div>
+            <button v-if="isAdmin" @click="goWrite"
+                class="shrink-0 px-5 py-2.5 bg-brand text-white rounded-full text-sm font-bold shadow-lg shadow-blue-100 hover:opacity-90 transition">
+                <i class="fa-solid fa-pen mr-1.5"></i>글쓰기
+            </button>
         </div>
 
-        <template v-else>
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- ── 좌측 aside (목록·상세 공용) ──────────── -->
+            <BlogAside />
+
+            <!-- ── 본문 ─────────────────────────────── -->
+            <div class="flex-1 min-w-0 max-w-3xl">
+                <!-- 로딩 (스켈레톤) -->
+                <div v-if="isLoading">
+                    <div class="w-20 h-6 rounded-full bg-slate-100 skeleton mb-4"></div>
+                    <div class="w-11/12 h-8 rounded bg-slate-100 skeleton mb-2"></div>
+                    <div class="w-2/3 h-8 rounded bg-slate-100 skeleton"></div>
+                    <div class="flex items-center gap-3 mt-5 pb-6 border-b border-slate-100">
+                        <div class="w-20 h-4 rounded bg-slate-100 skeleton"></div>
+                        <div class="w-28 h-4 rounded bg-slate-100 skeleton"></div>
+                    </div>
+                    <div class="w-full h-56 rounded-2xl bg-slate-100 skeleton mt-8"></div>
+                    <div class="space-y-3 mt-8">
+                        <div class="w-full h-4 rounded bg-slate-100 skeleton"></div>
+                        <div class="w-full h-4 rounded bg-slate-100 skeleton"></div>
+                        <div class="w-5/6 h-4 rounded bg-slate-100 skeleton"></div>
+                        <div class="w-full h-4 rounded bg-slate-100 skeleton"></div>
+                        <div class="w-3/4 h-4 rounded bg-slate-100 skeleton"></div>
+                    </div>
+                </div>
+
+                <!-- 에러 -->
+                <div v-else-if="isError || !post" class="text-center text-slate-400 py-24">
+                    글을 불러오지 못했습니다.
+                    <div class="mt-6">
+                        <button @click="goList" class="text-brand font-medium">← 목록으로</button>
+                    </div>
+                </div>
+
+                <template v-else>
             <!-- 상단 네비 + 관리 버튼 -->
             <div class="flex items-center justify-between mb-6">
                 <button @click="goList" class="text-sm text-slate-400 hover:text-brand transition">
@@ -230,11 +264,29 @@ const removeComment = async (c) => {
                     </li>
                 </ul>
             </section>
-        </template>
+                </template>
+            </div>
+        </div>
     </div>
 </template>
 
 <style scoped>
+/* 스켈레톤 shimmer 애니메이션 */
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
 .blog-content :deep(.ql-editor) {
     font-size: 1.05rem;
     line-height: 1.9;
